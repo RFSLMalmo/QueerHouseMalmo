@@ -1,301 +1,541 @@
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Queer House Malmö</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap">
+
 <style>
-  :root {
-    --navy:   #1F3643;
-    --purple: #41284A;
-    --orange: #FF7448;
-    --orange-dark: #d95a30;
-    --white:  #FFFDFC;
-    --black:  #1D1D1D;
-    --muted:  rgba(255,253,252,0.55);
-    --border: rgba(255,253,252,0.15);
-  }
+/* ── TOKENS ── */
+:root {
+  --bg:         #FFF0EC;
+  --bg-card:    #FDE8DF;
+  --grape:      #5C1F6B;
+  --coral:      #E8553A;
+  --peach:      #F5A07A;
+  --peach-lt:   #FBD0BC;
+  --ink:        #1A0A22;
+  --muted:      #7A4A6A;
+  --btn-hover:  #C73D24;
+  --star-a:     #E8553A;
+  --star-b:     #F5A07A;
+  --star-c:     #5C1F6B;
+  --border:     rgba(92,31,107,0.15);
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* committed to one warm, celebratory theme — deliberately single-theme */
 
-  body {
-    background: var(--navy);
-    color: var(--white);
-    font-family: 'Nunito', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ── HEADER ── */
-  .site-header {
-    background: var(--navy);
-    padding: 2rem 2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding-inline: 20px;
+  padding-block: 2.5rem 4rem;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
 
-  .wordmark {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 900;
-    color: var(--white);
-    letter-spacing: -0.01em;
-    text-align: center;
-  }
+/* ── SPARKLES / STARS (CSS only) ── */
+.sparkles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
 
-  .tagline {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--white);
-    opacity: 0.45;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-align: center;
-  }
+.spark {
+  position: absolute;
+  display: block;
+}
 
-  .rainbow-stripe {
-    height: 6px;
-    background: linear-gradient(90deg,
-      #E40303 0%,   #E40303 14.28%,
-      #FF8C00 14.28%,#FF8C00 28.57%,
-      #FFED00 28.57%,#FFED00 42.85%,
-      #008026 42.85%,#008026 57.14%,
-      #004DFF 57.14%,#004DFF 71.42%,
-      #750787 71.42%,#750787 100%);
-  }
+/* 4-point star via clip-path */
+.spark-4 {
+  width: 18px; height: 18px;
+  clip-path: polygon(50% 0%, 55% 40%, 100% 50%, 55% 60%, 50% 100%, 45% 60%, 0% 50%, 45% 40%);
+}
+.spark-4.sm { width: 10px; height: 10px; }
+.spark-4.lg { width: 28px; height: 28px; }
 
-  /* ── LANG TOGGLE ── */
-  .lang-bar {
-    background: var(--purple);
-    padding: 0.6rem 2rem;
-    display: flex;
-    justify-content: flex-end;
-  }
+/* 4-point cross/plus sparkle */
+.spark-cross {
+  width: 16px; height: 16px;
+  background: transparent;
+  position: relative;
+}
+.spark-cross::before,
+.spark-cross::after {
+  content: '';
+  position: absolute;
+  border-radius: 2px;
+}
+.spark-cross::before {
+  width: 3px; height: 100%;
+  left: 50%; transform: translateX(-50%);
+  background: inherit;
+}
+.spark-cross::after {
+  height: 3px; width: 100%;
+  top: 50%; transform: translateY(-50%);
+  background: inherit;
+}
 
-  .lang-toggle {
-    display: flex;
-    gap: 0.25rem;
-    background: rgba(0,0,0,0.2);
-    border-radius: 100px;
-    padding: 0.18rem;
-  }
+/* Dot sparkle */
+.spark-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
 
-  .lang-btn {
-    background: none; border: none;
-    color: rgba(255,253,252,0.45);
-    padding: 0.25rem 0.85rem;
-    border-radius: 100px; cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.78rem; font-weight: 700;
-    transition: all 0.15s;
-  }
-  .lang-btn.active { background: var(--orange); color: var(--white); }
+/* Individual spark placements */
+.spark:nth-child(1)  { top: 4%;  left: 5%;  background: var(--star-a); }
+.spark:nth-child(2)  { top: 8%;  left: 88%; background: var(--star-b); opacity:.7; }
+.spark:nth-child(3)  { top: 16%; left: 92%; background: var(--star-c); }
+.spark:nth-child(4)  { top: 22%; left: 2%;  background: var(--star-b); opacity:.6; }
+.spark:nth-child(5)  { top: 35%; left: 96%; background: var(--star-a); opacity:.5; }
+.spark:nth-child(6)  { top: 40%; left: 3%;  background: var(--star-c); opacity:.4; }
+.spark:nth-child(7)  { top: 55%; left: 91%; background: var(--star-b); }
+.spark:nth-child(8)  { top: 60%; left: 6%;  background: var(--star-a); opacity:.6; }
+.spark:nth-child(9)  { top: 72%; left: 94%; background: var(--star-c); opacity:.5; }
+.spark:nth-child(10) { top: 80%; left: 3%;  background: var(--star-b); opacity:.7; }
+.spark:nth-child(11) { top: 88%; left: 89%; background: var(--star-a); opacity:.6; }
+.spark:nth-child(12) { top: 93%; left: 8%;  background: var(--star-c); }
+.spark:nth-child(13) { top: 12%; left: 50%; background: var(--star-b); opacity:.3; }
+.spark:nth-child(14) { top: 68%; left: 50%; background: var(--star-a); opacity:.25; }
+.spark:nth-child(15) { top: 30%; left: 14%; background: var(--star-b); }
+.spark:nth-child(16) { top: 50%; left: 82%; background: var(--star-c); opacity:.4; }
+.spark:nth-child(17) { top: 6%;  left: 70%; background: var(--star-a); opacity:.5; }
+.spark:nth-child(18) { top: 75%; left: 18%; background: var(--star-b); opacity:.4; }
 
-  /* ── MAIN ── */
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem 1.5rem;
-    gap: 1.25rem;
-  }
+/* ── LAYOUT ── */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 540px;
+  margin: 0 auto;
+}
 
-  .intro {
-    text-align: center;
-    max-width: 520px;
-    margin-bottom: 1rem;
-  }
+/* ── LANG TOGGLE ── */
+.lang-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 3rem;
+}
+.lang-toggle {
+  display: flex;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  padding: 3px;
+  gap: 2px;
+}
+.lang-btn {
+  background: none;
+  border: none;
+  padding: 5px 16px;
+  border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  letter-spacing: 0.04em;
+}
+.lang-btn.active {
+  background: var(--grape);
+  color: #fff;
+}
+.lang-btn:hover:not(.active) {
+  color: var(--grape);
+}
 
-  .intro h1 {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 900;
-    margin-bottom: 0.75rem;
-    line-height: 1.2;
-  }
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
 
-  .intro h1 span { color: var(--orange); }
+.site-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.8rem, 9vw, 4.2rem);
+  line-height: 1.05;
+  color: var(--grape);
+  text-wrap: balance;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+}
 
-  .intro p {
-    color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.75;
-  }
+/* The "Q" gets a coral treatment */
+.site-name .q {
+  color: var(--coral);
+}
 
-  /* ── BUTTONS ── */
-  .buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    width: 100%;
-    max-width: 520px;
-  }
+.site-tagline {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  color: var(--muted);
+  font-weight: 400;
+  max-width: 360px;
+  margin: 0 auto;
+  line-height: 1.55;
+}
 
-  @media (max-width: 480px) {
-    .buttons { grid-template-columns: 1fr; }
-  }
+/* Decorative underline on the hero */
+.hero-rule {
+  width: 56px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--coral), var(--peach));
+  border-radius: 2px;
+  margin: 1.2rem auto 0;
+}
 
-  .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    padding: 1rem 1.25rem;
-    border-radius: 10px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 900;
-    text-decoration: none;
-    transition: all 0.15s;
-    cursor: pointer;
-    border: none;
-    text-align: center;
-    line-height: 1.3;
-  }
+/* ── ADDRESS CHIP ── */
+.address-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 3rem;
+  text-align: center;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+.address-chip:hover {
+  border-color: var(--peach);
+  color: var(--grape);
+}
+.address-chip-wrap {
+  display: flex;
+  justify-content: center;
+}
 
-  .btn-primary {
-    background: var(--orange);
-    color: var(--white);
-  }
-  .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+/* ── BUTTONS ── */
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-bottom: 3.5rem;
+}
 
-  .btn-outline {
-    background: rgba(255,253,252,0.06);
-    border: 1.5px solid var(--border);
-    color: var(--white);
-  }
-  .btn-outline:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-1px); }
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.1rem 1.6rem;
+  border-radius: 18px;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.14s, box-shadow 0.14s;
+  position: relative;
+  overflow: hidden;
+}
 
-  .btn-span { grid-column: 1 / -1; }
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(92,31,107,0.18);
+}
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
 
-  .btn-icon { font-size: 1.2rem; }
+.btn-primary {
+  background: var(--coral);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--btn-hover);
+}
 
-  /* ── ADDRESS ── */
-  .address {
-    margin-top: 2rem;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.82rem;
-    line-height: 1.8;
-  }
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--grape);
+  border: 2px solid var(--border);
+}
+.btn-secondary:hover {
+  background: var(--peach-lt);
+  border-color: var(--peach);
+}
 
-  .address strong { color: var(--white); display: block; font-size: 0.88rem; margin-bottom: 0.25rem; }
+.btn-grape {
+  background: var(--grape);
+  color: #fff;
+}
+.btn-grape:hover {
+  background: #4a1757;
+}
 
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 1.5rem;
-    border-top: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 0.75rem;
-  }
+.btn-label {
+  flex: 1;
+  text-align: left;
+}
+.btn-arrow {
+  font-size: 1.1rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
 
-  footer a { color: var(--orange); text-decoration: none; }
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+}
 
-  /* ── LANG ── */
-  .sv-c, .en-c { display: none; }
-  body.lang-sv .sv-c { display: inline; }
-  body.lang-en .en-c { display: inline; }
-  body.lang-sv .sv-b { display: block; }
-  body.lang-en .en-b { display: block; }
-  .sv-b, .en-b { display: none; }
+.footer-contact {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
 
-  /* ── ANIMATION ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .intro  { animation: fadeUp 0.4s ease both; }
-  .buttons { animation: fadeUp 0.4s ease 0.1s both; }
-  .address { animation: fadeUp 0.4s ease 0.2s both; }
+.footer-email {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--grape);
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--peach);
+}
+
+.footer-email:hover {
+  color: var(--coral);
+  border-color: var(--coral);
+}
+
+.footer-divider {
+  width: 32px;
+  height: 2px;
+  background: var(--peach-lt);
+  border-radius: 1px;
+  margin: 1.5rem auto;
+}
+
+.footer-orgs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.org-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* ── LANG CONTENT ── */
+.sv-b, .en-b { display: none; }
+.sv-c, .en-c { display: none; }
+body.lang-sv .sv-b { display: block; }
+body.lang-en .en-b { display: block; }
+body.lang-sv .sv-c { display: inline; }
+body.lang-en .en-c { display: inline; }
+
+/* ── BOOKING CALLOUT ── */
+.booking-callout {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.booking-callout-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  background: var(--coral);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.booking-callout-icon svg {
+  display: block;
+}
+.booking-callout-text {
+  flex: 1;
+}
+.booking-callout-heading {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--grape);
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
+}
+.booking-callout-body {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.booking-callout-body a {
+  color: var(--coral);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--peach);
+  transition: color 0.15s, border-color 0.15s;
+}
+.booking-callout-body a:hover {
+  color: var(--btn-hover);
+  border-color: var(--coral);
+}
+
+/* ── FOCUS STATES ── */
+.btn:focus-visible,
+.lang-btn:focus-visible {
+  outline: 2.5px solid var(--coral);
+  outline-offset: 3px;
+}
 </style>
-</head>
-<body class="lang-sv">
 
-<!-- RAINBOW STRIPE FIRST -->
-<div class="rainbow-stripe"></div>
-
-<!-- LANG BAR -->
-<div class="lang-bar">
-  <div class="lang-toggle">
-    <button class="lang-btn active" onclick="setLang('sv')">Svenska</button>
-    <button class="lang-btn"        onclick="setLang('en')">English</button>
-  </div>
+<!-- Sparkle decoration layer -->
+<div class="sparkles" aria-hidden="true">
+  <span class="spark spark-4 lg"></span>
+  <span class="spark spark-4 sm"></span>
+  <span class="spark spark-4"></span>
+  <span class="spark spark-dot" style="width:8px;height:8px"></span>
+  <span class="spark spark-4 sm"></span>
+  <span class="spark spark-cross" style="background:var(--star-c);opacity:.35"></span>
+  <span class="spark spark-4"></span>
+  <span class="spark spark-dot"></span>
+  <span class="spark spark-4 sm"></span>
+  <span class="spark spark-4 lg"></span>
+  <span class="spark spark-dot" style="width:10px;height:10px"></span>
+  <span class="spark spark-4"></span>
+  <span class="spark spark-cross" style="background:var(--star-a);opacity:.2"></span>
+  <span class="spark spark-dot" style="width:5px;height:5px;background:var(--star-a)"></span>
+  <span class="spark spark-4 sm"></span>
+  <span class="spark spark-cross" style="background:var(--star-b);opacity:.3"></span>
+  <span class="spark spark-4 sm"></span>
+  <span class="spark spark-dot" style="width:7px;height:7px;background:var(--peach)"></span>
 </div>
 
-<!-- HEADER -->
-<div class="site-header">
-  <div class="wordmark">🐱 Queer House Malmö 👠</div>
-  <div class="tagline sv-c">Ett queert nav i Malmö</div>
-  <div class="tagline en-c">A queer hub in Malmö</div>
+<div class="page">
+
+  <!-- Language toggle -->
+  <div class="lang-row">
+    <div class="lang-toggle" role="group" aria-label="Language / Språk">
+      <button class="lang-btn active" onclick="setLang('sv')" aria-label="Svenska">SV</button>
+      <button class="lang-btn"        onclick="setLang('en')" aria-label="English">EN</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <h1 class="site-name">
+      <span class="q">Q</span>ueer<br>House Malmö
+    </h1>
+    <p class="site-tagline sv-b">Ett queert hem mitt i Malmö, där RFSL Malmö och Malmö Pride bor under samma tak.</p>
+    <p class="site-tagline en-b">A queer home in the heart of Malmö, where RFSL Malmö and Malmö Pride live under one roof.</p>
+    <div class="hero-rule"></div>
+  </header>
+
+  <!-- Address -->
+  <div class="address-chip-wrap">
+    <a class="address-chip" href="https://maps.google.com/?q=Bangatan+7,+214+26+Malmö" target="_blank" rel="noopener" aria-label="Hitta oss på Google Maps">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 1.5C5.515 1.5 3.5 3.515 3.5 6c0 3.75 4.5 8.5 4.5 8.5s4.5-4.75 4.5-8.5c0-2.485-2.015-4.5-4.5-4.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="currentColor"/>
+      </svg>
+      Bangatan 7, 214 26 Malmö
+    </a>
+  </div>
+
+  <!-- Booking callout -->
+  <div class="booking-callout">
+    <div class="booking-callout-icon" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+        <path d="M6 2v2M14 2v2M3 7h14M5 3h10a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="booking-callout-text">
+      <div class="booking-callout-heading sv-b">Hyr vår lokal!</div>
+      <div class="booking-callout-heading en-b">Rent our space!</div>
+      <p class="booking-callout-body sv-b">Vi hyr ut till organisationer och föreningar som delar våra värderingar. Kontakta oss på <a href="mailto:malmo@rfsl.se">malmo@rfsl.se</a> för pris och bokning.</p>
+      <p class="booking-callout-body en-b">We rent to organisations and associations that share our values. Contact us at <a href="mailto:malmo@rfsl.se">malmo@rfsl.se</a> for pricing and bookings.</p>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <nav class="buttons" aria-label="Snabblänkar">
+    <a class="btn btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLScsXLPDz0QkREHLHSuvzMb7QMOT-5LLR2rNKlT0WUQw6hj8Ew/viewform" target="_blank" rel="noopener">
+      <span class="btn-label">
+        <span class="sv-c">Boka lokalen</span>
+        <span class="en-c">Book the space</span>
+      </span>
+      <span class="btn-arrow">→</span>
+    </a>
+
+    <a class="btn btn-grape" href="mailto:malmo@rfsl.se">
+      <span class="btn-label">
+        <span class="sv-c">Kontakta oss</span>
+        <span class="en-c">Contact us</span>
+      </span>
+      <span class="btn-arrow">→</span>
+    </a>
+
+    <a class="btn btn-secondary" href="https://rfsl.se/malmo/" target="_blank" rel="noopener">
+      <span class="btn-label">RFSL Malmö</span>
+      <span class="btn-arrow">→</span>
+    </a>
+
+    <a class="btn btn-secondary" href="https://malmopride.com" target="_blank" rel="noopener">
+      <span class="btn-label">Malmö Pride</span>
+      <span class="btn-arrow">→</span>
+    </a>
+  </nav>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p class="footer-contact sv-b">Frågor? Hör av dig till oss.</p>
+    <p class="footer-contact en-b">Questions? Get in touch.</p>
+    <a class="footer-email" href="mailto:malmo@rfsl.se">malmo@rfsl.se</a>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-orgs">
+      <span class="org-badge">RFSL Malmö</span>
+      <span style="color:var(--peach-lt);font-size:1rem">✦</span>
+      <span class="org-badge">Malmö Pride</span>
+    </div>
+  </footer>
+
 </div>
-
-<!-- MAIN -->
-<main>
-  <div class="intro">
-    <h1 class="sv-b">Välkommen till <span>Queer House Malmö</span></h1>
-    <h1 class="en-b">Welcome to <span>Queer House Malmö</span></h1>
-    <p class="sv-b">Queer House Malmö är ett queert nav i Malmö. Lokalen drivs av RFSL Malmö och välkomnar HBTQ+-föreningar, organisationer, grupper och privatpersoner.</p>
-    <p class="en-b">Queer House Malmö is a queer hub in Malmö. The venue is run by RFSL Malmö and welcomes LGBTQ+ associations, organisations, groups and individuals.</p>
-  </div>
-
-  <div class="buttons">
-    <!-- Book a room -->
-    <a class="btn btn-primary btn-span" href="https://script.google.com/a/macros/malmo.rfsl.se/s/AKfycby-_7RtJQQ105L5NOro8Bn2sRKdayDM93_D20GM5O9vUWDcbzW410v8EzYwVRvfvbED/exec" target="_blank">
-      <span class="btn-icon">📅</span>
-      <span class="sv-c">Boka en lokal</span>
-      <span class="en-c">Book a room</span>
-    </a>
-
-    <!-- RFSL Malmö -->
-    <a class="btn btn-outline" href="https://www.rfsl.se/malmo" target="_blank">
-      <span class="btn-icon">🏳️‍🌈</span>
-      RFSL Malmö
-    </a>
-
-    <!-- Malmö Pride -->
-    <a class="btn btn-outline" href="https://malmopride.com" target="_blank">
-      <span class="btn-icon">🌈</span>
-      Malmö Pride
-    </a>
-
-    <!-- Contact -->
-    <a class="btn btn-outline btn-span" href="mailto:malmo@rfsl.se">
-      <span class="btn-icon">📧</span>
-      <span class="sv-c">Kontakta oss</span>
-      <span class="en-c">Contact us</span>
-      &nbsp;· malmo@rfsl.se
-    </a>
-  </div>
-
-  <div class="address">
-    <strong>Queer House Malmö</strong>
-    Bangatan 7, 214 26 Malmö
-  </div>
-</main>
-
-<!-- FOOTER -->
-<footer>
-  <span class="sv-c">Queer House Malmö drivs av</span>
-  <span class="en-c">Queer House Malmö is run by</span>
-  <a href="https://www.rfsl.se/malmo" target="_blank">RFSL Malmö</a>
-</footer>
 
 <script>
   function setLang(l) {
     document.body.className = 'lang-' + l;
-    document.querySelectorAll('.lang-btn').forEach((b, i) =>
-      b.classList.toggle('active', (i===0&&l==='sv')||(i===1&&l==='en'))
-    );
-    localStorage.setItem('qhm-lang', l);
+    document.querySelectorAll('.lang-btn').forEach((b, i) => {
+      b.classList.toggle('active', (i === 0 && l === 'sv') || (i === 1 && l === 'en'));
+    });
+    try { localStorage.setItem('qhm-lang', l); } catch(e) {}
   }
-  const saved = localStorage.getItem('qhm-lang') || 'sv';
-  setLang(saved);
+
+  // Restore saved language
+  try {
+    const saved = localStorage.getItem('qhm-lang');
+    if (saved === 'en') setLang('en');
+    else setLang('sv');
+  } catch(e) {
+    setLang('sv');
+  }
 </script>
-</body>
-</html>
